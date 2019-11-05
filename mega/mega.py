@@ -216,25 +216,44 @@ class Mega(object):
         for foldername in paths:
             if foldername != '':
                 for file in files.iteritems():
-                    if file[1]['a'] and file[1]['t'] and \
-                            file[1]['a']['n'] == foldername:
-                        if parent_desc == file[1]['p']:
-                            parent_desc = file[0]
-                            found = True
+                    try:
+                        if file[1]['a'] and file[1]['t'] and \
+                                file[1]['a']['n'] == foldername:
+                            if parent_desc == file[1]['p']:
+                                parent_desc = file[0]
+                                found = True
+                    except TypeError:
+                        pass
                 if found:
                     found = False
                 else:
                     return None
         return parent_desc
-    
+
     def find(self, filename):
         """
         Return file object from given filename
         """
         files = self.get_files()
         for file in files.items():
-            if file[1]['a'] and file[1]['a']['n'] == filename:
-                return file
+            try:
+                if file[1]['a'] and file[1]['a']['n'] == filename:
+                    return file
+            except TypeError:
+                pass
+
+    def find_all(self, filename):
+        """
+        Return file object from given filename
+        """
+        files = []
+        for file in self.get_files().items():
+            try:
+                if file[1]['a'] and file[1]['a']['n'] == filename:
+                    files.append(file)
+            except TypeError:
+                pass
+        return files
 
     def get_files(self):
         """
